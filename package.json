@@ -2,10 +2,11 @@
   "name": "videotube",
   "version": "1.0.0",
   "description": "this is videotube app 1st backend apk",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
   },
   "keywords": [
     "javascript",
