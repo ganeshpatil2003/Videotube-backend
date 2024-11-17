@@ -13,7 +13,8 @@ const uploadOnCloudinary = async (localeFilePath) => {
     const response = await cloudinary.uploader.upload(localeFilePath , {          // upload the file to clodinary
       resource_type : "auto"
     })
-    console.log(`File has been uploaded successfully ${response.url}`)
+    console.log(`File has been uploaded successfully ${response}`)
+    fs.unlinkSync(localeFilePath)
     return response
   } catch (error) {
     fs.unlinkSync(localeFilePath); // remove file from loacalefile system when not uploaded for cleaning purpose
