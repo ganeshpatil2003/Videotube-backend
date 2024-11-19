@@ -8,9 +8,9 @@ const generateAccessAndRefreshToken = async(userid) => {
   try {
     const user = await User.findById(userid);
 
-    const accessToken = user.generateAccessToken();
+    const accessToken = await user.generateAccessToken();
 
-    const refreshToken = user.generateRefreshToken();
+    const refreshToken = await user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     
@@ -106,7 +106,7 @@ const logInUser = asyncHandler(async (req , res) => {
   // send secure cokkies
 
   const {username,password,email} = req.body;
-
+//  console.log(username,password,email)
   if(!(username || email)){
     throw new ApiError(400,"Username or Email is required");
   }
@@ -126,14 +126,14 @@ const logInUser = asyncHandler(async (req , res) => {
   }
 
   const {accessToken,refreshToken} = await generateAccessAndRefreshToken(user._id);
-
+  // console.log({accessToken,refreshToken})
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
   const options = {
     httpOnly  :true,
     secure : true
   }
-
+  console.log("loggedin")
   return res.status(200)
   .cookie("accessToken",accessToken,options)
   .cookie("refreshToken",refreshToken,options)
@@ -159,7 +159,7 @@ const logOutUser = asyncHandler(async (req,res) => {
       httpOnly : true,
       secure : true
     }
-
+    console.log("loggedout")
     return res.status(200)
     .clearCookie("accessToken",options)
     .clearCookie("refreshToken",options)
