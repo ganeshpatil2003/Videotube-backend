@@ -164,7 +164,7 @@ const logOutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user?._id,
     {
-      $set: { refreshToken: undefined },
+      $unset: { refreshToken: 1 },
     },
     {
       new: true,
@@ -352,7 +352,7 @@ const getUSerChannelProfile = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User name is missing.");
   }
 
-  const userArray = await User.aggregate([
+  const pipeline = [
     {
       $match: {
         username: username?.toLowerCase(),
@@ -367,10 +367,12 @@ const getUSerChannelProfile = asyncHandler(async (req, res) => {
       },
     },
     {
-      $lookup: "subscriptions",
-      localField: "_id",
-      foreignField: "subscriber",
-      as: "subscribedToChannel",
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedToChannel",
+      },
     },
     {
       $addFields: {
@@ -401,7 +403,9 @@ const getUSerChannelProfile = asyncHandler(async (req, res) => {
         coverimage: 1,
       },
     },
-  ]);
+  ];
+
+  const userArray = await User.aggregate(pipeline);
   if (!userArray?.length) {
     throw new ApiError(400, "Channel doesnt exist");
   }
@@ -418,16 +422,17 @@ const getUSerChannelProfile = asyncHandler(async (req, res) => {
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {
-  const user = User.aggregate([
+
+  const user = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(req.user?._id),
+        _id: new mongoose.Types.ObjectId(req.user._id),
       },
     },
     {
       $lookup: {
-        from: "videoes",
-        localField: "wathcHistory",
+        from: "videos",
+        localField: "watchHistory",
         foreignField: "_id",
         as: "watchHistory",
         pipeline: [
@@ -440,8 +445,8 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               pipeline: [
                 {
                   $project: {
+                    fullname: 1,
                     username: 1,
-                    email: 1,
                     avatar: 1,
                   },
                 },
@@ -459,16 +464,9 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
     },
   ]);
-
   return res
     .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        user[0].watchHistory,
-        "Watch history fetched successfully.",
-      ),
-    );
+    .json(new ApiResponse(200,user[0].watchHistory, "Watch history fetched successfully."));
 });
 
 export {

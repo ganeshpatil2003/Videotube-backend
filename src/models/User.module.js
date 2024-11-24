@@ -53,7 +53,9 @@ const userSchema = new Schema(
 
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
+    
     this.password = await bcrypt.hash(this.password, 10);
+    console.log(this.password)
     next();
   }
 });
@@ -90,3 +92,7 @@ userSchema.methods.generateRefreshToken = async function(){
 }
 
 export const User = mongoose.model("User", userSchema);
+
+//$2b$10$QEaEpdK2LCNibhuE7/qEn.0gLhYfKoR/LFD7ySNl0shRYRgMlriMi
+
+//$2b$10$hOzyx4WgQm17La4eSAYQJ.yWbgSoVi.WrBGlEAyHfYigAhzHOLKiC
