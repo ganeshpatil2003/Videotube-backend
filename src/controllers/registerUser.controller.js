@@ -40,8 +40,6 @@ const registerUser = asyncHandler(async (req, res) => {
   const { fullname, password, username, email } = req.body;
   //   const username = req.body.username || "default_username";
   //   const email = req.body.email || "default_email@example.com";
-  console.log(req.files);
-
   if (
     [fullname, password, username, email].some((field) => field?.trim() === "")
   ) {
@@ -142,7 +140,7 @@ const logInUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
   };
-  console.log("loggedin");
+
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
