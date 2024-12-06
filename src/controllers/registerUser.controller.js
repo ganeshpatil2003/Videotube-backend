@@ -173,7 +173,7 @@ const logOutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
   };
-  console.log("loggedout");
+  // console.log("loggedout");  
   return res
     .status(200)
     .clearCookie("accessToken", options)
