@@ -38,6 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // check for user creation
   // return response
   const { fullname, password, username, email } = req.body;
+  console.log(req.files)
   //   const username = req.body.username || "default_username";
   //   const email = req.body.email || "default_email@example.com";
   if (
