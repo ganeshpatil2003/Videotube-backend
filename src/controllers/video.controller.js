@@ -7,7 +7,63 @@ import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js";
 import { removeMediaFromCloudinary } from "../utils/removeMediaFromCloudinary.js";
 import { removeFromCloudinary } from "../utils/removeFromCloudinary.js";
 const geAllVideoes = asyncHandler(async (req, res) => {
-  const {} = req.query;
+  const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+  let match = {};
+  if (query) {
+    match.title = { $regex: query, $options: "i" };
+    match.description = { $regex: query, $options: "i" };
+  }
+  if (userId) {
+    match.owner = userId;
+  }
+  const sort = {};
+  if (sortBy) {
+    sort[sortBy] = sortType === "desc" ? -1 : 1;
+  }
+  const options = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+  };
+
+  const videoes = await Video.aggregatePaginate(
+    Video.aggregate([
+      {
+        $match: match,
+      },
+      {
+        $sort: sort,
+      },
+      {
+        $lookup: {
+          localField: "owner",
+          from: "users",
+          foreignField: "_id",
+          as: "owner",
+          pipeline: [
+            {
+              $project: {
+                username: 1,
+                fullname: 1,
+                email: 1,
+                avatar: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          owner: {
+            $first: "$owner",
+          },
+        },
+      },
+    ]),
+    options,
+  );
+  return res
+    .status(200)
+    .json(new ApiResponse(200, videoes, "Videoes fetched successfully."));
 });
 
 const getVideoById = asyncHandler(async (req, res) => {
