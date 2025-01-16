@@ -143,7 +143,7 @@ const publishVideo = asyncHandler(async (req, res) => {
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const videoLocalePath = req?.files?.video[0]?.path;
-  const thumbnailLocalePath = req?.files?.video[0]?.path;
+  const thumbnailLocalePath = req?.files?.thumbnail[0]?.path;
   const { title, description } = req.body;
   const video = await Video.findById(videoId);
 
