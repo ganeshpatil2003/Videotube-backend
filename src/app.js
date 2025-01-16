@@ -7,6 +7,7 @@ import { tweetRoutes } from "./routes/tweet.routes.js";
 import { playListRoutes } from "./routes/playlist.routes.js";
 import { subscriptionRoutes } from "./routes/subscription.routes.js";
 import { commentRoutes } from "./routes/comment.routes.js";
+import { likeRoutes } from "./routes/like.routes.js";
 const app = express();
 
 app.use(cors({
