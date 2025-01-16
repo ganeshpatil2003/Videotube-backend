@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { userRouter } from "./routes/user.routes.js";
 import { videoRoutes } from "./routes/video.routes.js";
+import { tweetRoutes } from "./routes/tweet.routes.js";
 const app = express();
 
 app.use(cors({
@@ -27,6 +28,6 @@ app.use("/api/v1/users",userRouter)
 
 app.use('/api1/v1/videoes',videoRoutes);
 
-
+app.use('/api1/v1/tweets',tweetRoutes);
 
 export { app };
