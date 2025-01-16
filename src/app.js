@@ -4,6 +4,9 @@ import cookieParser from "cookie-parser";
 import { userRouter } from "./routes/user.routes.js";
 import { videoRoutes } from "./routes/video.routes.js";
 import { tweetRoutes } from "./routes/tweet.routes.js";
+import { playListRoutes } from "./routes/playlist.routes.js";
+import { subscriptionRoutes } from "./routes/subscription.routes.js";
+import { commentRoutes } from "./routes/comment.routes.js";
 const app = express();
 
 app.use(cors({
@@ -29,5 +32,14 @@ app.use("/api/v1/users",userRouter)
 app.use('/api1/v1/videoes',videoRoutes);
 
 app.use('/api1/v1/tweets',tweetRoutes);
+
+app.use('/api1/v1/playLists',playListRoutes);
+
+app.use('/api1/v1/subscriptions',subscriptionRoutes);
+
+app.use('/api1/v1/comments',commentRoutes);
+
+app.use('/api1/v1/likes',likeRoutes);
+
 
 export { app };
